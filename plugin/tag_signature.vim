@@ -1,7 +1,7 @@
 " Tag Signature Balloon
 "   Author: A. S. Budden
 "   Date:   16th July 2009
-"   Version: r277
+"   Version: r283
 
 if &cp || exists("g:loaded_tag_signature") || ! has('balloon_eval')
 	finish
@@ -9,7 +9,7 @@ endif
 let g:loaded_tag_signature = 1
 
 function! GetTagSignature()
-	let TagList = taglist(v:beval_text)
+	let TagList = taglist('\<' . v:beval_text . '\>')
 	let s = ""
 
 	if len(TagList) > 0
