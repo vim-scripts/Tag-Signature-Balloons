@@ -1,7 +1,7 @@
 " Tag Signature Balloon
 "   Author: A. S. Budden
-"   Date:   3rd August 2009
-"   Version: r293
+"## Date::   26th August 2009        ##
+"## RevTag:: r314                    ##
 
 if &cp || exists("g:loaded_tag_signature") || ! has('balloon_eval')
 	finish
@@ -30,9 +30,19 @@ function! FindTypeTag(cmd, filename)
 					if FileContents[StartIndex] =~ 'typedef'
 						" We've found the start and end
 						let s = FileContents[StartIndex]
-						for i in range(StartIndex+1, index)
-							let s = s . "\n" . FileContents[i]
-						endfor
+						if (index - StartIndex) > 20
+							for i in range(StartIndex+1, StartIndex+5)
+								let s = s . "\n" . FileContents[i]
+							endfor
+							let s = s . "\n\n\t\t... [skipped] ...\n\n"
+							for i in range(index-6, index)
+								let s = s . "\n" . FileContents[i]
+							endfor
+						else
+							for i in range(StartIndex+1, index)
+								let s = s . "\n" . FileContents[i]
+							endfor
+						endif
 						break
 					endif
 				endfor
@@ -45,6 +55,10 @@ function! FindTypeTag(cmd, filename)
 endfunction
 
 function! GetTagSignature()
+	if v:beval_text !~ '^\k\+$'
+		return
+	endif
+
 	let TagList = taglist('^' . v:beval_text . '$')
 	let s = ""
 
