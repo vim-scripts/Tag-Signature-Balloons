@@ -1,7 +1,7 @@
 " Tag Signature Balloon
 "   Author: A. S. Budden
-"## Date::   26th August 2009        ##
-"## RevTag:: r314                    ##
+"## Date::   4th September 2009      ##
+"## RevTag:: r319                    ##
 
 if &cp || exists("g:loaded_tag_signature") || ! has('balloon_eval')
 	finish
@@ -54,6 +54,22 @@ function! FindTypeTag(cmd, filename)
 	return s
 endfunction
 
+let s:CStyleFunctionKindLookup =
+			\ {
+			\     'java':       ['m'],
+			\     'perl':       ['s'],
+			\     'c#':         ['m'],
+			\     'c':          ['f', 'p'],
+			\     'c++':        ['f', 'p'],
+			\     'javascript': ['f']
+			\ }
+
+let s:CStyleTypeKindLookup = 
+			\ {
+			\     'c': 't',
+			\     'c++': 't'
+			\ }
+
 function! GetTagSignature()
 	if v:beval_text !~ '^\k\+$'
 		return
@@ -74,7 +90,9 @@ function! GetTagSignature()
 				" A non-open source file
 				let s = readfile(FileName, '', LineNum)[LineNum-1]
 			endif
-		elseif (TagList[0]['kind'] == 'f') || (TagList[0]['kind'] == 'p')
+		elseif index(keys(s:CStyleFunctionKindLookup), &ft) != -1
+					\ && index(s:CStyleFunctionKindLookup[&ft], TagList[0]['kind']) != -1
+					\ && has_key(TagList[0], 'signature')
 			" Handle functions (combine the signature and name)
 			let s = substitute(TagList[0]['cmd'], '^/\^\(.*\)\$/$', '\1', '')
 			let ReturnType = substitute(s, '^\(.\{-}\)\s\+' . TagList[0]['name'] . '.*', '\1', '')
@@ -85,8 +103,10 @@ function! GetTagSignature()
 				endif
 			endif
 		elseif TagList[0]['kind'] == 't'
-			" Typedefs - experimental
-			let s = FindTypeTag(TagList[0]['cmd'], TagList[0]['filename'])
+			if index(keys(s:CStyleTypeKindLookup), &ft) != -1
+				" Typedefs - experimental
+				let s = FindTypeTag(TagList[0]['cmd'], TagList[0]['filename'])
+			endif
 		elseif TagList[0]['kind'] == 'e'
 			let s = ""
 			if has_key(TagList[0], 'enum')
