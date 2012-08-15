@@ -1,9 +1,13 @@
 " Tag Signature Balloon
 "   Author: A. S. Budden
-"## Date::   7th April 2012          ##
+"## Date::   15th August 2012        ##
+
+if v:version < 700
+	finish
+endif
 
 try
-	if &cp || v:version < 700 || ! has('balloon_eval') || (exists('g:loaded_tag_signature') && (g:plugin_development_mode != 1))
+	if &cp || ! has('balloon_eval') || (exists('g:loaded_tag_signature') && (g:plugin_development_mode != 1))
 		throw "Already loaded"
 	endif
 catch
