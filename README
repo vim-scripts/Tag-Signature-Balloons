@@ -2,4 +2,4 @@ This is a mirror of http://www.vim.org/scripts/script.php?script_id=2714
 
 This is a very simple script that displays the 'signature' of a tag when you hover the mouse over that tag.  Only works if Vim has('balloon_eval') and if there is an available tag file.
 
-Screenshots are available here: http://sites.google.com/site/abudden/contents/Vim-Scripts/tag-balloons
+Screenshots and the development repository are available on bitbucket: https://bitbucket.org/abudden/tagsignature

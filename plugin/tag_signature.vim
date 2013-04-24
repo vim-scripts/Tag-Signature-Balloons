@@ -1,6 +1,6 @@
 " Tag Signature Balloon
 "   Author: A. S. Budden
-"## Date::   15th August 2012        ##
+"## Date::   24th April 2013        ##
 
 if v:version < 700
 	finish
@@ -117,11 +117,17 @@ function! GetTagSignature()
 				let FileName = TagList[Index]['filename']
 				if bufexists(FileName) && (len(getbufline(FileName, LineNum)) > 0)
 					" An open source file
-					let s = getbufline(FileName, LineNum)[0]
+					let l = getbufline(FileName, LineNum, LineNum + 9)
 				elseif (g:TagSignatureAllowFileLoading == 1) && filereadable(FileName)
 					" A non-open source file
-					let s = readfile(FileName, '', LineNum)[LineNum-1]
+					let l = readfile(FileName, '', LineNum+9)[LineNum-1:LineNum+8]
 				endif
+				" Take more lines if they end with a backslash
+				let i = 0
+				while l[i] =~ '\\$' && i < 9
+					let i += 1
+				endwhile
+				let s = join(l[0:i], "\n")
 			elseif index(keys(s:CStyleFunctionKindLookup), &ft) != -1
 						\ && index(s:CStyleFunctionKindLookup[&ft], TagList[Index]['kind']) != -1
 						\ && has_key(TagList[Index], 'signature')
